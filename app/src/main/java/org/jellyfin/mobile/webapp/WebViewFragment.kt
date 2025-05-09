@@ -14,7 +14,6 @@ import android.webkit.WebView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.doOnNextLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -22,6 +21,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewAssetLoader.AssetsPathHandler
 import androidx.webkit.WebViewCompat
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import org.jellyfin.mobile.R
 import org.jellyfin.mobile.app.ApiClientController
@@ -199,7 +199,7 @@ class WebViewFragment : Fragment(), BackPressInterceptor, JellyfinWebChromeClien
     }
 
     private fun showOutdatedWebViewDialog(webView: WebView) {
-        AlertDialog.Builder(requireContext()).apply {
+        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme).apply {
             setTitle(R.string.dialog_web_view_outdated)
             setMessage(R.string.dialog_web_view_outdated_message)
             setCancelable(false)

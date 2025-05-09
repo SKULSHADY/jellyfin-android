@@ -1,9 +1,9 @@
 package org.jellyfin.mobile.utils
 
 import android.Manifest.permission.BLUETOOTH_CONNECT
-import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.jellyfin.mobile.MainActivity
 import org.jellyfin.mobile.R
@@ -36,7 +36,7 @@ class BluetoothPermissionHelper(
         wasDialogShowThisSession = true
 
         val shouldRequestPermission = suspendCancellableCoroutine { continuation ->
-            AlertDialog.Builder(activity)
+            MaterialAlertDialogBuilder(activity, R.style.AlertDialogTheme)
                 .setTitle(R.string.bluetooth_permission_title)
                 .setMessage(R.string.bluetooth_permission_message)
                 .setNegativeButton(android.R.string.cancel) { dialog, _ ->

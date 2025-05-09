@@ -1,9 +1,9 @@
 package org.jellyfin.mobile.player.ui
 
+import android.view.ContextThemeWrapper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.annotation.StringRes
@@ -183,7 +183,7 @@ class PlayerMenus(
         "- $title$suffix"
     }
 
-    private fun createSubtitlesMenu() = PopupMenu(context, subtitlesButton).apply {
+    private fun createSubtitlesMenu() = PopupMenu(ContextThemeWrapper(context, R.style.AppTheme), subtitlesButton).apply {
         setOnMenuItemClickListener { clickedItem ->
             // Immediately apply changes to the menu, necessary when direct playing
             // When transcoding, the updated media source will cause the menu to be rebuilt
@@ -200,7 +200,7 @@ class PlayerMenus(
         setOnDismissListener(this@PlayerMenus)
     }
 
-    private fun createAudioStreamsMenu() = PopupMenu(context, audioStreamsButton).apply {
+    private fun createAudioStreamsMenu() = PopupMenu(ContextThemeWrapper(context, R.style.AppTheme), audioStreamsButton).apply {
         setOnMenuItemClickListener { clickedItem: MenuItem ->
             // Immediately apply changes to the menu, necessary when direct playing
             // When transcoding, the updated media source will cause the menu to be rebuilt
@@ -213,7 +213,7 @@ class PlayerMenus(
         setOnDismissListener(this@PlayerMenus)
     }
 
-    private fun createSpeedMenu() = PopupMenu(context, speedButton).apply {
+    private fun createSpeedMenu() = PopupMenu(ContextThemeWrapper(context, R.style.AppTheme), speedButton).apply {
         for (step in SPEED_MENU_STEP_MIN..SPEED_MENU_STEP_MAX) {
             val newSpeed = step * SPEED_MENU_STEP_SIZE
             menu.add(SPEED_MENU_GROUP, step, Menu.NONE, "${newSpeed}x").isChecked = newSpeed == 1f
@@ -227,7 +227,7 @@ class PlayerMenus(
         setOnDismissListener(this@PlayerMenus)
     }
 
-    private fun createQualityMenu() = PopupMenu(context, qualityButton).apply {
+    private fun createQualityMenu() = PopupMenu(ContextThemeWrapper(context, R.style.AppTheme), qualityButton).apply {
         setOnMenuItemClickListener { item: MenuItem ->
             val newBitrate = item.itemId.takeUnless { bitrate -> bitrate == 0 }
             fragment.onBitrateChanged(newBitrate) {
@@ -238,7 +238,7 @@ class PlayerMenus(
         setOnDismissListener(this@PlayerMenus)
     }
 
-    private fun createDecoderMenu() = PopupMenu(context, qualityButton).apply {
+    private fun createDecoderMenu() = PopupMenu(ContextThemeWrapper(context, R.style.AppTheme), qualityButton).apply {
         menu.add(
             DECODER_MENU_GROUP,
             DecoderType.HARDWARE.ordinal,

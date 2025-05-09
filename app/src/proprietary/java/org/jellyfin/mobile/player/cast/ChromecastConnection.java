@@ -1,7 +1,6 @@
 package org.jellyfin.mobile.player.cast;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +22,7 @@ import com.google.android.gms.cast.framework.CastState;
 import com.google.android.gms.cast.framework.CastStateListener;
 import com.google.android.gms.cast.framework.SessionManager;
 import com.google.android.gms.cast.framework.SessionManagerListener;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.jellyfin.mobile.R;
 import org.jellyfin.mobile.bridge.JavascriptCallback;
@@ -38,12 +38,6 @@ public class ChromecastConnection {
      * A shared handler for this connection instance.
      */
     private final Handler handler;
-
-    /**
-     * Lifetime variable.
-     */
-    @Nullable
-    private Activity activity;
     /**
      * settings object.
      */
@@ -52,17 +46,19 @@ public class ChromecastConnection {
      * Controls the media.
      */
     private final ChromecastSession chromecastSession;
-
-    /**
-     * Lifetime variable.
-     */
-    private SessionListener newConnectionListener;
-
     /**
      * The Listener callback.
      */
     private final Listener listener;
-
+    /**
+     * Lifetime variable.
+     */
+    @Nullable
+    private Activity activity;
+    /**
+     * Lifetime variable.
+     */
+    private SessionListener newConnectionListener;
     /**
      * Initialize lifetime variable.
      */
@@ -361,7 +357,7 @@ public class ChromecastConnection {
                 builder.show();
             } else {
                 // We are are already connected, so show the "connection options" Dialog
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(activity, R.style.AlertDialogTheme);
                 if (session.getCastDevice() != null) {
                     builder.setTitle(session.getCastDevice().getFriendlyName());
                 }
@@ -519,6 +515,41 @@ public class ChromecastConnection {
         activity = null;
     }
 
+    interface SelectRouteCallback {
+        void onJoin(JSONObject jsonSession);
+
+        void onError(JSONObject message);
+    }
+
+    interface ConnectionCallback {
+        /**
+         * Successfully joined a session on a route.
+         *
+         * @param jsonSession the session we joined
+         */
+        void onJoin(JSONObject jsonSession);
+
+        /**
+         * Called if we received an error.
+         *
+         * @param errorCode You can find the error meaning here:
+         *                  https://developers.google.com/android/reference/com/google/android/gms/cast/CastStatusCodes
+         * @return true if we are done listening for join, false, if we to keep listening
+         */
+        boolean onSessionStartFailed(int errorCode);
+
+        /**
+         * Called when we detect a session ended event before session started.
+         * See issues:
+         * https://github.com/jellyfin/cordova-plugin-chromecast/issues/49
+         * https://github.com/jellyfin/cordova-plugin-chromecast/issues/48
+         *
+         * @param errorCode error to output
+         * @return true if we are done listening for join, false, if we to keep listening
+         */
+        boolean onSessionEndedBeforeStart(int errorCode);
+    }
+
     /**
      * Create this empty class so that we don't have to override every function
      * each time we need a SessionManagerListener.
@@ -561,12 +592,6 @@ public class ChromecastConnection {
         }
     }
 
-    interface SelectRouteCallback {
-        void onJoin(JSONObject jsonSession);
-
-        void onError(JSONObject message);
-    }
-
     abstract static class RequestSessionCallback implements ConnectionCallback {
         abstract void onError(int errorCode);
 
@@ -585,43 +610,7 @@ public class ChromecastConnection {
         }
     }
 
-    interface ConnectionCallback {
-        /**
-         * Successfully joined a session on a route.
-         *
-         * @param jsonSession the session we joined
-         */
-        void onJoin(JSONObject jsonSession);
-
-        /**
-         * Called if we received an error.
-         *
-         * @param errorCode You can find the error meaning here:
-         *                  https://developers.google.com/android/reference/com/google/android/gms/cast/CastStatusCodes
-         * @return true if we are done listening for join, false, if we to keep listening
-         */
-        boolean onSessionStartFailed(int errorCode);
-
-        /**
-         * Called when we detect a session ended event before session started.
-         * See issues:
-         * https://github.com/jellyfin/cordova-plugin-chromecast/issues/49
-         * https://github.com/jellyfin/cordova-plugin-chromecast/issues/48
-         *
-         * @param errorCode error to output
-         * @return true if we are done listening for join, false, if we to keep listening
-         */
-        boolean onSessionEndedBeforeStart(int errorCode);
-    }
-
     public abstract static class ScanCallback extends MediaRouter.Callback {
-        /**
-         * Called whenever a route is updated.
-         *
-         * @param routes the currently available routes
-         */
-        abstract void onRouteUpdate(List<RouteInfo> routes);
-
         /**
          * records whether we have been stopped or not.
          */
@@ -630,6 +619,13 @@ public class ChromecastConnection {
          * Global mediaRouter object.
          */
         private MediaRouter mediaRouter;
+
+        /**
+         * Called whenever a route is updated.
+         *
+         * @param routes the currently available routes
+         */
+        abstract void onRouteUpdate(List<RouteInfo> routes);
 
         /**
          * Sets the mediaRouter object.

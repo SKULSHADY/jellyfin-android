@@ -12,12 +12,12 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStarted
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jellyfin.mobile.events.ActivityEventHandler
@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
 
         // Check WebView support
         if (!isWebViewSupported()) {
-            AlertDialog.Builder(this).apply {
+            MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme).apply {
                 setTitle(R.string.dialog_web_view_not_supported)
                 setMessage(R.string.dialog_web_view_not_supported_message)
                 setCancelable(false)

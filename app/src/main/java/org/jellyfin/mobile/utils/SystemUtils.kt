@@ -3,7 +3,6 @@ package org.jellyfin.mobile.utils
 import android.Manifest
 import android.app.Activity
 import android.app.ActivityManager
-import android.app.AlertDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.ActivityNotFoundException
@@ -18,6 +17,7 @@ import android.provider.Settings.System.ACCELEROMETER_ROTATION
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.getSystemService
 import com.google.android.exoplayer2.offline.DownloadService
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.jellyfin.mobile.BuildConfig
@@ -67,7 +67,7 @@ suspend fun MainActivity.requestDownload(uri: Uri, filename: String) {
     val appPreferences: AppPreferences = get()
 
     val downloadMethod = appPreferences.downloadMethod ?: suspendCancellableCoroutine { continuation ->
-        AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
             .setTitle(R.string.network_title)
             .setMessage(R.string.network_message)
             .setPositiveButton(R.string.wifi_only) { _, _ ->
@@ -107,10 +107,11 @@ suspend fun MainActivity.requestDownload(uri: Uri, filename: String) {
         downloadUtils.download()
     }
 }
-suspend fun MainActivity.removeDownload(download: LocalJellyfinMediaSource, force: Boolean = false) {
+
+suspend fun MainActivity.removeDownload(context: Context, download: LocalJellyfinMediaSource, force: Boolean = false) {
     if (!force) {
         val confirmation = suspendCancellableCoroutine { continuation ->
-            AlertDialog.Builder(this)
+            MaterialAlertDialogBuilder(context, R.style.AlertDialogTheme)
                 .setTitle(getString(R.string.confirm_deletion))
                 .setMessage(getString(R.string.confirm_deletion_desc, download.name))
                 .setPositiveButton(getString(R.string.yes)) { _, _ ->
