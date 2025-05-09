@@ -2,41 +2,54 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:layout_marginBottom="2dp"
+    android:background="@drawable/rounded_bg"
+    android:backgroundTint="?colorPrimary"
     android:baselineAligned="false"
+    android:foreground="@drawable/ripple_background"
+    android:orientation="horizontal"
     android:padding="16dp">
 
     <ImageView
         android:id="@+id/imageViewThumbnail"
         android:layout_width="0dp"
-        android:layout_weight="1.5"
         android:layout_height="wrap_content"
+        android:layout_weight="1.25"
         android:adjustViewBounds="true"
+        android:background="@drawable/rounded_bg"
+        android:clipToOutline="true"
         android:contentDescription="@string/thumbnail_desc" />
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_weight="2"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:layout_weight="2"
         android:gravity="center"
-        android:paddingHorizontal="16dp">
+        android:orientation="vertical"
+        android:paddingStart="16dp">
 
         <TextView
             android:id="@+id/textViewName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="21sp" />
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@android:color/white"
+            android:textFontWeight="500"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/textViewDescription"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/textViewFileSize"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
+            android:layout_height="wrap_content"
+            android:textSize="14sp" />
     </LinearLayout>
 </LinearLayout>

@@ -10,7 +10,7 @@
     <string name="toast_reopen_after_change">Please reopen the app after changes are made</string>
 
     <string name="connect_to_server_title">Connect to Server</string>
-    <string name="host_input_hint">Host</string>
+    <string name="host_input_hint">Server Hostname / IP</string>
     <string name="connection_error_cannot_connect">Connection cannot be established.\nPlease check the hostname and your network connection.</string>
     <plurals name="connection_error_prefix">
         <item quantity="one">Tried %d candidate for input, without success.</item>
@@ -19,8 +19,8 @@
     <string name="connection_error_unable_to_reach_sever">Unable to reach server</string>
     <string name="connection_error_unsupported_version_or_product">Unsupported version or product</string>
     <string name="connect_button_text">Connect</string>
-    <string name="choose_server_button_text">Choose server</string>
-    <string name="available_servers_title">Available servers</string>
+    <string name="choose_server_button_text">Choose Server</string>
+    <string name="available_servers_title">Available Servers</string>
     <string name="button_use_different_server">Use a different server</string>
 
     <string name="bluetooth_permission_title">Allow Bluetooth access?</string>
@@ -121,7 +121,7 @@
 
     <string name="pref_category_downloads">Downloads</string>
     <string name="pref_download_location">Download location</string>
-    <string name="view_downloads">View downloads</string>
+    <string name="view_downloads">View Downloads</string>
     <string name="downloads">Downloads</string>
     <string name="download_notifications_description">Download notifications</string>
     <string name="failed_thumbnail">Failed to download thumbnail</string>
@@ -134,7 +134,8 @@
     <string name="thumbnail_desc">Thumbnail</string>
     <string name="store_videos_in_internal_storage">Store videos in internal storage</string>
     <string name="stored_videos_in_internal_storage_desc">Videos such as movies and TV shows will be stored in the app\'s internal storage. Allowing access from within the app.</string>
-    <string name="tv_show_desc">%1$s - S%2$dE%3$d</string>
+    <string name="tv_show_title">%1$s</string>
+    <string name="tv_show_desc">S%2$dE%3$d - %1$s</string>
     <string name="downloading_desc">Downloading %1$d titles</string>
     <string name="downloaded">Downloaded %1$s</string>
 </resources>

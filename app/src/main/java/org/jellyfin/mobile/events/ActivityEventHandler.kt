@@ -81,7 +81,7 @@ class ActivityEventHandler(
             }
             is ActivityEvent.RemoveDownload -> {
                 lifecycleScope.launch {
-                    with(event) { removeDownload(download, force) }
+                    with(event) { removeDownload(context, download, force) }
                 }
             }
             ActivityEvent.OpenDownloads -> {

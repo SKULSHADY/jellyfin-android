@@ -14,10 +14,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -27,7 +30,12 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowForward
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.rounded.ArrowForward
+import androidx.compose.material.icons.rounded.Dns
+import androidx.compose.material.icons.rounded.Download
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -122,48 +130,51 @@ fun ServerSelection(
     }
 
     Column {
-        Text(
-            text = stringResource(R.string.connect_to_server_title),
-            modifier = Modifier.padding(bottom = 8.dp),
-            style = MaterialTheme.typography.h5,
-        )
         Crossfade(
             targetState = serverSelectionMode,
             label = "Server selection mode",
         ) { selectionType ->
             when (selectionType) {
-                ServerSelectionMode.ADDRESS -> AddressSelection(
-                    text = hostname,
-                    errorText = when {
-                        externalError -> stringResource(R.string.connection_error_cannot_connect)
-                        else -> (checkUrlState as? CheckUrlState.Error)?.message
-                    },
-                    loading = checkUrlState is CheckUrlState.Pending,
-                    onTextChange = { value ->
-                        externalError = false
-                        checkUrlState = CheckUrlState.Unchecked
-                        hostname = value
-                    },
-                    onDiscoveryClick = {
-                        externalError = false
-                        keyboardController?.hide()
-                        serverSelectionMode = ServerSelectionMode.AUTO_DISCOVERY
-                    },
-                    onSubmit = {
-                        onSubmit()
-                    },
-                )
-                ServerSelectionMode.AUTO_DISCOVERY -> ServerDiscoveryList(
-                    serverSuggestions = serverSuggestions,
-                    onGoBack = {
-                        serverSelectionMode = ServerSelectionMode.ADDRESS
-                    },
-                    onSelectServer = { url ->
-                        hostname = url
-                        serverSelectionMode = ServerSelectionMode.ADDRESS
-                        onSubmit()
-                    },
-                )
+                ServerSelectionMode.ADDRESS -> {
+                    Row {
+                        AddressSelection(
+                            text = hostname,
+                            errorText = when {
+                                externalError -> stringResource(R.string.connection_error_cannot_connect)
+                                else -> (checkUrlState as? CheckUrlState.Error)?.message
+                            },
+                            loading = checkUrlState is CheckUrlState.Pending,
+                            onTextChange = { value ->
+                                externalError = false
+                                checkUrlState = CheckUrlState.Unchecked
+                                hostname = value
+                            },
+                            onDiscoveryClick = {
+                                externalError = false
+                                keyboardController?.hide()
+                                serverSelectionMode = ServerSelectionMode.AUTO_DISCOVERY
+                            },
+                            onSubmit = {
+                                onSubmit()
+                            },
+                        )
+                    }
+                }
+                ServerSelectionMode.AUTO_DISCOVERY -> {
+                    Column {
+                        ServerDiscoveryList(
+                            serverSuggestions = serverSuggestions,
+                            onGoBack = {
+                                serverSelectionMode = ServerSelectionMode.ADDRESS
+                            },
+                            onSelectServer = { url ->
+                                hostname = url
+                                serverSelectionMode = ServerSelectionMode.ADDRESS
+                                onSubmit()
+                            },
+                        )
+                    }
+                }
             }
         }
     }
@@ -190,13 +201,9 @@ private fun AddressSelection(
         if (!loading) {
             Spacer(modifier = Modifier.height(12.dp))
             StyledTextButton(
-                text = stringResource(R.string.connect_button_text),
-                enabled = text.isNotBlank(),
-                onClick = onSubmit,
-            )
-            StyledTextButton(
                 text = stringResource(R.string.choose_server_button_text),
                 onClick = onDiscoveryClick,
+                icon = Icons.Rounded.Dns,
             )
         } else {
             CenterRow {
@@ -214,36 +221,53 @@ private fun ServerUrlField(
     onTextChange: (String) -> Unit,
     onSubmit: () -> Unit,
 ) {
-    OutlinedTextField(
-        value = text,
-        onValueChange = onTextChange,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 8.dp)
-            .onKeyEvent { keyEvent ->
-                when (keyEvent.nativeKeyEvent.keyCode) {
-                    KeyEvent.KEYCODE_ENTER -> {
-                        onSubmit()
-                        true
+    CenterRow {
+        OutlinedTextField(
+            value = text,
+            onValueChange = onTextChange,
+            modifier = Modifier
+                .padding(bottom = 8.dp)
+                .fillMaxWidth(0.8f)
+                .onKeyEvent { keyEvent ->
+                    when (keyEvent.nativeKeyEvent.keyCode) {
+                        KeyEvent.KEYCODE_ENTER -> {
+                            onSubmit()
+                            true
+                        }
+                        else -> false
                     }
-                    else -> false
-                }
+                },
+            label = {
+                Text(text = stringResource(R.string.host_input_hint))
             },
-        label = {
-            Text(text = stringResource(R.string.host_input_hint))
-        },
-        isError = errorText != null,
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Uri,
-            imeAction = ImeAction.Go,
-        ),
-        keyboardActions = KeyboardActions(
-            onGo = {
-                onSubmit()
-            },
-        ),
-        singleLine = true,
-    )
+            shape = MaterialTheme.shapes.large,
+            isError = errorText != null,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Uri,
+                imeAction = ImeAction.Go,
+            ),
+            keyboardActions = KeyboardActions(
+                onGo = {
+                    onSubmit()
+                },
+            ),
+            singleLine = true,
+        )
+        Button(
+            enabled = text.isNotBlank(),
+            onClick = { onSubmit() },
+            modifier = Modifier
+                .padding(start = 16.dp)
+                .height(56.dp)
+                .width(56.dp),
+            colors = ButtonDefaults.buttonColors(),
+            shape = MaterialTheme.shapes.large,
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Rounded.ArrowForward, contentDescription = null, tint = MaterialTheme.colors.onPrimary,
+            )
+        }
+    }
 }
 
 @Stable
@@ -278,13 +302,14 @@ private fun ServerDiscoveryList(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(onClick = onGoBack) {
-                Icon(imageVector = Icons.Outlined.ArrowBack, contentDescription = null)
+                Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
             }
             Text(
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = 8.dp),
                 text = stringResource(R.string.available_servers_title),
+                style = MaterialTheme.typography.h6,
             )
             CircularProgressIndicator(
                 modifier = Modifier

@@ -2,6 +2,7 @@ package org.jellyfin.mobile.downloads
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.jellyfin.mobile.R
@@ -22,6 +23,7 @@ class DownloadsAdapter(
 
     override fun onBindViewHolder(holder: DownloadViewHolder, position: Int) {
         holder.bind(getItem(position))
+        holder.updateBackground(position)
     }
 
     inner class DownloadViewHolder(private val binding: DownloadItemBinding) :
@@ -35,11 +37,20 @@ class DownloadsAdapter(
             val context = itemView.context
 
             val mediaItem: BaseItemDto? = downloadEntity.mediaSource.item
-            binding.textViewName.text = downloadEntity.mediaSource.name
+            if (mediaItem?.seriesName != null) {
+
+            }
+            binding.textViewName.text = when {
+                mediaItem?.seriesName != null -> context.getString(
+                    R.string.tv_show_title,
+                    mediaItem.seriesName,
+                )
+                else -> downloadEntity.mediaSource.name
+            }
             binding.textViewDescription.text = when {
                 mediaItem?.seriesName != null -> context.getString(
                     R.string.tv_show_desc,
-                    mediaItem.seriesName,
+                    downloadEntity.mediaSource.name,
                     mediaItem.parentIndexNumber,
                     mediaItem.indexNumber,
                 )
@@ -57,6 +68,19 @@ class DownloadsAdapter(
             }
 
             binding.imageViewThumbnail.setImageBitmap(downloadEntity.thumbnail)
+        }
+
+        fun updateBackground(position: Int) {
+            val drawable = if (itemCount == 1) {
+                R.drawable.rounded_bg_full
+            } else if (position == 0) {
+                R.drawable.rounded_bg_top
+            } else if (position == itemCount - 1) {
+                R.drawable.rounded_bg_bottom
+            } else {
+                R.drawable.rounded_bg
+            }
+            binding.root.background = AppCompatResources.getDrawable(itemView.context, drawable)
         }
     }
 }

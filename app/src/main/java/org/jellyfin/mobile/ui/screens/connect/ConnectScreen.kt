@@ -7,16 +7,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Download
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.jellyfin.mobile.MainViewModel
 import org.jellyfin.mobile.R
 import org.jellyfin.mobile.events.ActivityEvent
@@ -46,6 +52,7 @@ fun ConnectScreen(
             StyledTextButton(
                 onClick = { activityEventHandler.emit(ActivityEvent.OpenDownloads) },
                 text = stringResource(R.string.view_downloads),
+                icon = Icons.Rounded.Download,
             )
         }
     }
@@ -60,7 +67,8 @@ fun LogoHeader() {
         Image(
             painter = painterResource(R.drawable.app_logo),
             modifier = Modifier
-                .height(72.dp),
+                .height(72.dp)
+                .padding(bottom = 8.dp),
             contentDescription = null,
         )
     }
@@ -70,6 +78,7 @@ fun LogoHeader() {
 @Composable
 fun StyledTextButton(
     text: String,
+    icon: ImageVector? = null,
     enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
@@ -77,10 +86,19 @@ fun StyledTextButton(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = 4.dp)
+            .height(56.dp),
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(),
+        shape = MaterialTheme.shapes.large,
     ) {
-        Text(text = text)
+        icon?.let {
+            Icon(
+                imageVector = it, contentDescription = null, tint = MaterialTheme.colors.onPrimary,
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+            )
+        }
+        Text(text = text, fontSize = 15.sp, fontWeight = FontWeight.Bold)
     }
 }
