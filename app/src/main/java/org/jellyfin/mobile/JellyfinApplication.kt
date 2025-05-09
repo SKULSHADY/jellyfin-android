@@ -2,6 +2,7 @@ package org.jellyfin.mobile
 
 import android.app.Application
 import android.webkit.WebView
+import androidx.appcompat.app.AppCompatDelegate
 import org.jellyfin.mobile.app.apiModule
 import org.jellyfin.mobile.app.applicationModule
 import org.jellyfin.mobile.data.databaseModule
@@ -26,6 +27,8 @@ class JellyfinApplication : Application() {
                 WebView.setWebContentsDebuggingEnabled(true)
             }
         }
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
 
         startKoin {
             androidContext(this@JellyfinApplication)
